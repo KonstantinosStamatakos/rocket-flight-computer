@@ -1,28 +1,7 @@
-/*
- * gps.c
- *
- *  Created on: Jun 10, 2026
- *      Author: deanstamatakos
- */
-
 #include "gps.h"
 #include <string.h>
 #include <stdlib.h>
 
-/*
- * ============================================================
- * gps.c
- * ------------------------------------------------------------
- * Minimal NMEA GPS parser.
- *
- * This file:
- * - reads UART bytes
- * - builds full NMEA sentences
- * - parses GGA and RMC
- *
- * It is intentionally simple so it is easy to understand.
- * ============================================================
- */
 
 static float GPS_NmeaToDecimalDegrees(const char *nmea, char hemi)
 {
@@ -32,9 +11,6 @@ static float GPS_NmeaToDecimalDegrees(const char *nmea, char hemi)
     /*
      * NMEA latitude/longitude format:
      *   ddmm.mmmm  or  dddmm.mmmm
-     *
-     * Example:
-     *   4224.1234 means 42 degrees + 24.1234 minutes
      */
     float val = (float)atof(nmea);
     int degrees = (int)(val / 100.0f);
