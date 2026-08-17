@@ -1,27 +1,4 @@
-/*
- * vertical_filter.c
- *
- *  Created on: Jun 10, 2026
- *      Author: deanstamatakos
- */
-
 #include "vertical_filter.h"
-
-/*
- * ============================================================
- * vertical_filter.c
- * ------------------------------------------------------------
- * Very small vertical estimator.
- *
- * Predict step:
- *   uses acceleration to update altitude and velocity
- *
- * Update step:
- *   uses barometer altitude to correct the estimate
- *
- * This is a good first flight estimator.
- * ============================================================
- */
 
 void VerticalFilter_Init(VerticalFilter_t *f,
                          float init_alt_m,
@@ -57,9 +34,7 @@ void VerticalFilter_Predict(VerticalFilter_t *f,
     f->v = f->v + accel_mps2 * dt_s;
 
     /*
-     * Covariance update:
-     * F = [1 dt; 0 1]
-     * G = [0.5 dt^2; dt]
+     * Covariance update
      */
     float P00 = f->P00;
     float P01 = f->P01;
