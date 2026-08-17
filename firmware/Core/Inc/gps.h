@@ -1,30 +1,8 @@
-/*
- * gps.h
- *
- *  Created on: Jun 10, 2026
- *      Author: deanstamatakos
- */
-
 #ifndef GPS_H
 #define GPS_H
 
 #include "stm32f4xx_hal.h"
 #include <stdint.h>
-
-/*
- * ============================================================
- * gps.h
- * ------------------------------------------------------------
- * Very small UART/NMEA GPS interface.
- *
- * This version:
- * - receives ASCII NMEA lines
- * - parses GGA and RMC
- * - stores the latest GPS info
- *
- * Good enough to start the flight project.
- * ============================================================
- */
 
 #define GPS_LINE_MAX_LEN  128
 
