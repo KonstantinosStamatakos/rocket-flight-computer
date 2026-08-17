@@ -1,31 +1,4 @@
-/*
- * imu.c
- *
- *  Created on: Jun 10, 2026
- *      Author: deanstamatakos
- */
-
-
 #include "imu.h"
-
-/*
- * ============================================================
- * imu.c
- * ------------------------------------------------------------
- * Minimal LSM6DSO32 driver.
- *
- * This version configures:
- * - accelerometer at 104 Hz, ±8 g
- * - gyroscope at 104 Hz, ±250 dps
- *
- * Why ±8 g for now:
- * - more headroom than ±4 g
- * - still decent resolution
- *
- * Later for flight we may increase range again depending on
- * expected boost acceleration.
- * ============================================================
- */
 
 #define LSM6DSO32_REG_WHO_AM_I   0x0F
 #define LSM6DSO32_REG_CTRL1_XL   0x10
@@ -35,19 +8,6 @@
 
 #define LSM6DSO32_WHO_AM_I_VAL   0x6C
 
-/*
- * CTRL1_XL = 0x48
- * - ODR_XL = 104 Hz
- * - FS_XL  = ±8 g
- *
- * CTRL2_G = 0x40
- * - ODR_G = 104 Hz
- * - FS_G  = ±250 dps
- *
- * CTRL3_C = 0x44
- * - BDU = 1 (block data update)
- * - IF_INC = 1 (auto-increment register address)
- */
 
 /* Conversion constants for the selected ranges */
 #define LSM6DSO32_ACC_SENSITIVITY_MG_LSB     0.244f
