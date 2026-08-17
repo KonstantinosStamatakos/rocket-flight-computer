@@ -1,32 +1,5 @@
-/*
- * vertical_filter.h
- *
- *  Created on: Jun 10, 2026
- *      Author: deanstamatakos
- */
-
 #ifndef VERTICAL_FILTER_H
 #define VERTICAL_FILTER_H
-
-/*
- * ============================================================
- * vertical_filter.h
- * ------------------------------------------------------------
- * Simple 1D vertical state estimator.
- *
- * State:
- *   h = altitude [m]
- *   v = vertical velocity [m/s]
- *
- * Input:
- *   vertical acceleration [m/s^2]
- *
- * Measurement:
- *   barometric altitude [m]
- *
- * This is a small Kalman-style filter.
- * ============================================================
- */
 
 typedef struct
 {
