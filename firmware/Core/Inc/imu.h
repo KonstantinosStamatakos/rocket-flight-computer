@@ -1,33 +1,8 @@
-/*
- * imu.h
- *
- *  Created on: Jun 10, 2026
- *      Author: deanstamatakos
- */
-
 #ifndef IMU_H
 #define IMU_H
 
 #include "stm32f4xx_hal.h"
 #include <stdint.h>
-
-/*
- * ============================================================
- * imu.h
- * ------------------------------------------------------------
- * Minimal LSM6DSO32 IMU driver interface.
- *
- * We expose:
- * - init
- * - read all sensor values
- *
- * For now, we store:
- * - temperature
- * - raw accel/gyro
- * - converted accel in g
- * - converted gyro in deg/s
- * ============================================================
- */
 
 typedef struct
 {
