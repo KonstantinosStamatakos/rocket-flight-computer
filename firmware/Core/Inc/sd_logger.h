@@ -1,9 +1,3 @@
-/*
- * sd_logger.h
- *
- *  Created on: Aug 9, 2026
- *      Author: deanstamatakos
- */
 #ifndef SD_LOGGER_H
 #define SD_LOGGER_H
 
@@ -13,11 +7,6 @@
  * ============================================================
  * SD LOGGER STATUS
  * ============================================================
- *
- * Οι τιμές αυτές μας επιτρέπουν να γνωρίζουμε:
- * - αν έγινε mount η κάρτα
- * - αν άνοιξε το αρχείο
- * - αν έγινε κάποιο write error
  */
 
 typedef enum
@@ -33,12 +22,6 @@ typedef enum
  * ============================================================
  * SD LOG RECORD
  * ============================================================
- *
- * Κάθε φορά που θέλουμε να γράψουμε ένα sample στην SD,
- * δημιουργούμε μία τέτοια δομή.
- *
- * Η δομή περιέχει όλα τα σημαντικά flight δεδομένα της
- * συγκεκριμένης χρονικής στιγμής.
  */
 
 typedef struct
@@ -68,47 +51,17 @@ typedef struct
 
 } SDLogRecord_t;
 
-/*
- * Κάνει mount την κάρτα και ανοίγει ένα νέο CSV αρχείο.
- *
- * Δημιουργεί αυτόματα:
- *
- * FLIGHT00.CSV
- * FLIGHT01.CSV
- * FLIGHT02.CSV
- * ...
- *
- * ώστε να μην αντικαθιστά προηγούμενη καταγραφή.
- */
+
 SDLoggerStatus_t SDLogger_Init(void);
 
-/*
- * Γράφει ένα record στο CSV.
- *
- * Δεν κάνει f_sync() σε κάθε γραμμή, γιατί αυτό θα προκαλούσε
- * μεγάλες καθυστερήσεις.
- */
 SDLoggerStatus_t SDLogger_WriteRecord(const SDLogRecord_t *record);
 
-/*
- * Αναγκάζει τα δεδομένα που βρίσκονται στα internal buffers
- * του FatFs/SD να γραφτούν στην κάρτα.
- */
 SDLoggerStatus_t SDLogger_Sync(void);
 
-/*
- * Κλείνει σωστά το αρχείο και κάνει unmount την κάρτα.
- */
 void SDLogger_Close(void);
 
-/*
- * Επιστρέφει 1 όταν ο logger είναι έτοιμος.
- */
 uint8_t SDLogger_IsReady(void);
 
-/*
- * Επιστρέφει το όνομα του αρχείου που δημιουργήθηκε.
- */
 const char *SDLogger_GetFilename(void);
 
 #endif
