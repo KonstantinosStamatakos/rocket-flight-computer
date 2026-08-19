@@ -7,7 +7,7 @@ The system integrates an IMU, barometer, GPS receiver, microSD storage, and USB 
 The flight computer has completed integrated ground testing and is currently being prepared for its first flight.
 
 <p align="center">
-  <img src="Photos/flight_computer.jpg" width="650">
+  <img src="Photos/flight_computer.png" width="650">
 </p>
 
 ---
