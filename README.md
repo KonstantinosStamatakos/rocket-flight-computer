@@ -86,10 +86,6 @@ Flight data is recorded to an onboard microSD card in CSV format using the STM32
 
 The logs contain raw sensor measurements together with the estimated altitude and vertical velocity, allowing the flight to be analyzed after recovery.
 
-Example ground-test logs are included in the `Logs/` directory.
-
-The logged data can also be processed in Python for visualization and analysis.
-
 ---
 
 ## Hardware and Firmware Bring-Up
@@ -112,20 +108,6 @@ This included:
 The microSD interface was one of the more challenging parts of the bring-up. Debugging required checking both the physical SDIO connections and the STM32 configuration before reliable file creation and continuous logging were achieved.
 
 Once the individual subsystems were working independently, I integrated them into the complete flight-computer firmware and tested them simultaneously.
-
----
-
-## Ground Testing
-
-The complete system has been tested with the major hardware and firmware components operating together.
-
-During ground testing, the flight computer continuously acquires IMU and barometer measurements, receives GPS data, updates the vertical-state estimator, writes data to the microSD card, and outputs debugging information through USB.
-
-These tests were used to verify the full data path from the physical sensors through the firmware and finally to the recorded CSV files.
-
----
-
-`Hardware/` contains the PCB design documentation, `firmware/` contains the STM32 source code, and `Logs/` contains example datasets recorded during ground testing.
 
 ---
 
