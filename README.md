@@ -1,50 +1,49 @@
 # Rocket Flight Computer
 
-Custom STM32F405-based flight computer designed for onboard data acquisition and state estimation in a high-power rocket.
+A custom STM32F405-based flight computer designed and built for my Level 2 high-power rocket.
 
-The board integrates a barometer, IMU, GPS receiver, microSD storage, and USB interface on a custom PCB. Embedded firmware handles sensor acquisition, calibration, data logging, and real-time estimation of altitude and vertical velocity.
+The system integrates an IMU, barometer, GPS receiver, microSD storage, and USB interface on a custom PCB. I developed the embedded firmware in C for sensor acquisition, calibration, data logging, and real-time estimation of altitude and vertical velocity.
 
-The system has completed ground testing and is being prepared for its first flight test.
+The flight computer has completed integrated ground testing and is currently being prepared for its first flight.
 
----
-
-## Overview
-
-The goal of this project was to build the complete avionics system rather than use a commercial flight computer or separate development boards.
-
-The project includes both the custom hardware and the embedded firmware required to:
-
-- acquire barometer, IMU, and GPS data
-- estimate altitude and vertical velocity in real time
-- log flight data to an onboard microSD card
-- provide USB serial output for testing and debugging
+<p align="center">
+  <img src="Photos/flight_computer.jpg" width="650">
+</p>
 
 ---
 
-## Hardware
+## Hardware Design
 
-The flight computer is built around an **STM32F405** microcontroller.
+The flight computer is built around an STM32F405 microcontroller. I designed the board to integrate the sensing, storage, and communication hardware required for flight onto a single PCB rather than using separate development boards.
 
-### Sensors and Interfaces
+The main hardware includes:
 
-| Component | Purpose | Interface |
-|---|---|---|
-| STM32F405 | Main processor | — |
-| BMP581 | Barometric pressure / altitude | I²C |
-| LSM6DSO32 | Accelerometer and gyroscope | I²C |
-| GPS receiver | Position and navigation data | UART |
-| microSD | Onboard data logging | SDIO |
-| USB | Debugging and serial output | USB CDC |
+- STM32F405 microcontroller
+- BMP581 barometer
+- LSM6DSO32 accelerometer and gyroscope
+- GPS receiver
+- microSD card
+- USB interface
 
-The hardware was designed as a custom PCB for integration into the rocket's avionics bay.
+The BMP581 and LSM6DSO32 communicate with the STM32 over I²C, the GPS receiver uses UART, and flight data is written to the microSD card through SDIO.
+
+### Schematic
+
+<p align="center">
+  <img src="Hardware/schematic.png" width="800">
+</p>
+
+### PCB Layout
+
+<p align="center">
+  <img src="Hardware/pcb_layout.png" width="800">
+</p>
 
 ---
 
 ## Firmware
 
-The firmware is written in **C** using the STM32 development environment.
-
-Each major subsystem is separated into its own module:
+The firmware is written in C and organized into separate modules for the major subsystems:
 
 ```text
 bmp581.c / bmp581.h
@@ -54,83 +53,100 @@ sd_logger.c / sd_logger.h
 vertical_filter.c / vertical_filter.h
 ```
 
-The main application coordinates sensor sampling, state estimation, data logging, and USB output.
+I developed the code for sensor acquisition, GPS communication, microSD logging, USB debugging, calibration, and vertical-state estimation.
+
+The main application continuously reads the onboard sensors, updates the altitude and vertical-velocity estimate, records the data to the microSD card, and provides live output over USB during testing.
 
 ---
 
 ## State Estimation
 
-Barometric altitude provides a useful absolute altitude measurement but contains measurement noise. Accelerometer data responds quickly to changes in motion but accumulates error when integrated over time.
+The flight computer estimates the rocket's altitude and vertical velocity in real time using data from the barometer and accelerometer.
 
-The flight computer combines these measurements using a **linear Kalman filter**.
+Barometric altitude provides an absolute measurement of altitude, but it contains measurement noise. Accelerometer data responds much faster to changes in motion, but integrating acceleration causes errors to accumulate over time.
 
-The filter estimates two vertical states:
+To combine the advantages of both measurements, I implemented a linear Kalman filter.
+
+The estimator tracks two states:
 
 ```text
 altitude
 vertical velocity
 ```
 
-Acceleration is used to predict the vehicle's motion, while barometric altitude is used to correct the estimate.
+Acceleration is used during the prediction step to estimate how the rocket's vertical state changes between measurements. Barometric altitude is then used to correct the estimate.
 
-This provides a continuous estimate of the rocket's vertical motion without relying on either sensor independently.
+This allows the flight computer to maintain a continuous estimate of the rocket's vertical motion without relying entirely on either sensor.
 
 ---
 
 ## Data Logging
 
-Sensor and estimated-state data are recorded to an onboard microSD card in CSV format.
+Flight data is recorded to an onboard microSD card in CSV format using the STM32 SDIO interface and FatFs.
 
-The logging system uses the STM32 **SDIO interface** with **FatFs** and records data for post-flight analysis.
+The logs contain raw sensor measurements together with the estimated altitude and vertical velocity, allowing the flight to be analyzed after recovery.
 
-Logged data includes measurements from the onboard sensors together with the output of the vertical-state estimator.
+Example ground-test logs are included in the `Logs/` directory.
 
-Example ground-test logs are included in the repository.
+The logged data can also be processed in Python for visualization and analysis.
 
 ---
 
-## Testing
+## Hardware and Firmware Bring-Up
 
-The system has been tested on the ground with all major subsystems operating together.
+A significant part of the project involved debugging the interaction between the custom PCB and the embedded firmware.
 
-Testing included:
+I brought up the system incrementally, testing individual subsystems before running the complete flight software.
 
-- barometer and IMU communication
-- GPS data reception
-- sensor calibration
-- USB CDC output
-- microSD initialization and file creation
-- continuous CSV logging
-- altitude and vertical-velocity estimation
+This included:
 
-A significant part of the project involved hardware/firmware debugging, particularly during microSD and sensor bring-up.
+- verifying communication with the BMP581 and LSM6DSO32
+- configuring and testing the GPS UART interface
+- calibrating sensor measurements
+- bringing up USB CDC for live debugging
+- initializing the microSD card through SDIO
+- creating and writing files using FatFs
+- validating continuous CSV logging
+- integrating the vertical-state estimator with the sensor pipeline
+
+The microSD interface was one of the more challenging parts of the bring-up. Debugging required checking both the physical SDIO connections and the STM32 configuration before reliable file creation and continuous logging were achieved.
+
+Once the individual subsystems were working independently, I integrated them into the complete flight-computer firmware and tested them simultaneously.
+
+---
+
+## Ground Testing
+
+The complete system has been tested with the major hardware and firmware components operating together.
+
+During ground testing, the flight computer continuously acquires IMU and barometer measurements, receives GPS data, updates the vertical-state estimator, writes data to the microSD card, and outputs debugging information through USB.
+
+These tests were used to verify the full data path from the physical sensors through the firmware and finally to the recorded CSV files.
+
+---
+
+`Hardware/` contains the PCB design documentation, `firmware/` contains the STM32 source code, and `Logs/` contains example datasets recorded during ground testing.
 
 ---
 
 ## Current Status
 
-The flight computer is currently operational in ground testing.
+The flight computer is operational in ground testing.
 
-Sensor acquisition, GPS communication, state estimation, USB debugging, and microSD logging have been implemented and tested.
+The custom PCB, sensor acquisition, GPS communication, USB debugging, microSD logging, and vertical-state estimator have been integrated and tested together.
 
-The next major step is flight testing the system onboard the Level 2 rocket.
+The next major step is to fly the system onboard my Level 2 rocket.
+
+Data recorded during the first flight will be used to evaluate the altitude and vertical-velocity estimates under real flight conditions and tune the estimator for future launches.
 
 ---
 
-## Tools
+## Tools and Technologies
 
-**Hardware:** STM32F405, BMP581, LSM6DSO32, GPS, microSD  
-**Firmware:** C, STM32 HAL, FatFs  
-**Interfaces:** I²C, UART, SDIO, USB CDC  
+**Hardware:** STM32F405, BMP581, LSM6DSO32, GPS, microSD
+
+**Firmware:** C, STM32 HAL, FatFs
+
+**Interfaces:** I²C, UART, SDIO, USB CDC
+
 **Analysis:** Python
-
----
-
-
-## Next Steps
-
-- Complete integrated pre-flight testing
-- Perform first flight test
-- Analyze recorded flight data
-- Compare barometric measurements with the estimated altitude and vertical velocity
-- Use flight data to tune the estimator for future launches
