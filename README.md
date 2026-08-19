@@ -36,7 +36,7 @@ The BMP581 and LSM6DSO32 communicate with the STM32 over I²C, the GPS receiver 
 ### PCB Layout
 
 <p align="center">
-  <img src="Hardware/pcb_layout.png" width="800">
+  <img src="Hardware/pcb-layout.png" width="800">
 </p>
 
 ---
